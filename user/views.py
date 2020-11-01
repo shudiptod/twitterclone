@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from .forms import UserRegisterForm, UserUpdateForm, ProfileUpdateForm
+from django.contrib.auth.models import User
 # Create your views here.
 
 def register(request):
@@ -13,7 +14,7 @@ def register(request):
             messages.success(request, f'Account Created for {username}.')
             return redirect('login')
     else:
-        form = UserRegisterForm()
+        form = UserRegisterForm(initial={'username':"shudipto",'email':"shudpto111@gmail.com",'password1':"password0099",'password2':"password0099"})
 
     return render (request,'user/register.html', {'form':form})
 
@@ -29,7 +30,13 @@ def profile(request):
             return redirect ('profile')
     else:
         uform = UserUpdateForm(instance=request.user)
-        pform = ProfileUpdateForm(instance=request.user.profile)
+        pform = ProfileUpdateForm(instance=request.user)
 
     return render(request,'user/profile.html', {'uform':uform,'pform':pform})
 
+@login_required
+def search(request):
+    if request.method == 'POST':
+        khujbo = request.POST.get('search')
+        results = User.objects.filter(username__contains=khujbo)
+        return render(request,'user/search_result.html',{'results':results})

@@ -7,7 +7,10 @@ from .models import Profile
 # signal that gets fired after the user is saved
 @receiver(post_save, sender=User)
 def create_profile(sender, instance, created, **kwargs):
+
+    print('function called')
     if created:
+        print('profile created')
         Profile.objects.create(user=instance)
 
 

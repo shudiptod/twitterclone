@@ -9,20 +9,20 @@
                 Profile
             </h3>
             <article class="media content-section" style="height: 140px; width: 100%">
-                {%  if user_profile != None %}
+                {%  if profile != None %}
                     <div class="mt-2 d-flex full-width align-items-center">
                         <img
                            class="rounded-circle mr-3 img-fluid"
                            style="width: 90px; height: 90px;"
-                           src="{{ user_profile.profile.image.url }}">
+                           src="{{ profile.image.url }}">
                         <div>
                             <h4 style="text-align: left"
                                     class="white-important">
-                                MY Username
+                                {{user.username}}
                             </h4>
                             <h6 style="text-align: left"
                                     class="email-profile">
-                                my email
+                                {{user.email}}
                             </h6>
 
                         </div>
@@ -36,11 +36,11 @@
                         <div>
                             <h4 style="text-align: left"
                                     class="white-important">
-                                ami user
+                                UserName
                             </h4>
                             <h6 style="text-align: left"
                                     class="email-profile">
-                                amar email
+                                Email
                             </h6>
                         </div>
                     </div>
@@ -54,50 +54,50 @@
                     <div class="col-6">
                             Following
                     </div>
-                    {%  if user_profile != None %}
+                    {%  if profile != None %}
                         <div class="col-6">
                             <h3 class="white-important follow-click">
-                                <a href="{% url 'user-followers' user_profile.username %}">
-                                    {{ user_profile.profile.followers }}
+                                <a href="#">
+                                    {{ user_profile.profile.followers}}
                                 </a>
                             </h3>
                         </div>
                          <div class="col-6">
-                            <a href="{% url 'user-follows' user_profile.username %}">
+                            <a href="#">
                                 <h3 class="white-important follow-click">
-                                    {{ user_profile.profile.following }}
+                                    {{user_profile.profile.follows}}
                                 </h3>
                             </a>
                         </div>
                     {% else %}
                         <div class="col-6">
-                            <a href="{% url 'user-followers' user.username %}">
+                            <a href="#">
                                 <h3 class="white-important follow-click">
-                                    {{ user.profile.followers }}
+                                    1M
                                 </h3>
                             </a>
                         </div>
 
-                        <a href="{% url 'user-follows' user.username %}">
+                        <a href="#">
                             <div class="col-6">
                                 <h3 class="white-important follow-click">
-                                    {{ user.profile.following }}
+                                    1
                                 </h3>
                             </div>
                         </a>
-                    {%  endif %}-->
+                    {%  endif %}
                 </div>
             </article>
 
             <div class="d-flex">
-                <!--{% if user_profile is None %}-->
+                {% if profile is None %}
                 <div style="margin-left: 40px">
-                    <a class="btn btn-sm btn-outline-primary mb-4 mr-3 " href="{% url 'post-create' %}">
+                    <a class="btn btn-sm btn-outline-primary mb-4 mr-3 " href="#">
                         Tweet
                     </a>
                 </div>
-                <!--{% endif %}-->
-                <!--{%  if user_profile is not None and user_profile.id != user.id  and user.username != '' %}
+                {% endif %}
+                {%  if profile is not None and user_profile.id != user.id  and user.username != '' %}
                     <form method="POST">
                         {% csrf_token %}
                         <div class="form-group">
@@ -112,7 +112,7 @@
                             </button>
                         </div>
                     </form>
-                {% endif %}-->
+                {% endif %}
             </div>
             </div>
         </div>
@@ -127,13 +127,12 @@
                     <h6
                             style="position: absolute; bottom: 0; right: 0"
                             class="white-important mb-3">
-                        {{ page_obj.start_index }} - {{ page_obj.end_index }} of
-                        {{ paginator.count }}
+                        {{ page_obj.start_index }} - {{ page_obj.end_index }} of {{ page_obj.paginator.count }}
                     </h6>
                 </div>
             </div>
 
-            <!--{% for post in posts %}
+            {% for post in page_obj %}
                 <article class="media content-section hovered-tweet">
                 <div style="width: 100%; word-break: break-all;">
 
@@ -145,7 +144,7 @@
                                class="rounded-circle mr-2"
                                style="width: 20px; height: 20px;"
                                src="{{ post.author.profile.image.url }}">
-                           <a class="mr-2 white-important" href="{% url 'user-posts' post.author %}">
+                           <a class="mr-2 white-important" href="{% url 'user_posts' post.author %}">
                                {{ post.author }}
                            </a>
                        </div>
@@ -166,7 +165,7 @@
                             style="width: 100%; height: 1px; background-color: rgba(255, 255, 255, 0.1)"></div>
                     <a
                             style="color: rgba(255, 255, 255, 0.5) !important;"
-                            href="{% url 'post-detail' post.id %}">
+                            href="/post/{{post.id}}/">
                         <p class="mb-4">
                             {{ post.content }}
                         </p>
@@ -176,7 +175,7 @@
                             <div class="col-6" style="display: flex;">
                                 <small style="opacity: 0.4;">
 
-                                    Like Buttons Here
+                                    <!--Like Buttons Here-->
                                     <a href="#" onClick="document.getElementById('likebutton').submit()">
                                             {% if post.likes == 1  %}
                                             <i style="color: red; font-size: 16px;" class="far fa-heart"></i>
@@ -188,16 +187,18 @@
 
                                     </a>
 
-                                    <form id="likebutton" method="POST" action="{% url 'postpreference' post.id 1%}">
-                                    {% csrf_token %}
-                                    <input type="hidden">
-                                    </form>
 
 
                                 </small>
+                                <form id="likebutton" method="POST" action="{% url 'postpreference' post.id 1%}">
+                                    {% csrf_token %}
+                                    <input type="hidden">
+                                </form>
+
+
                                 <small style="opacity: 0.4; margin-left:15px;">
                                     <a href="/post/{{post.id}}/">
-                                        <i style=" font-size: 16px;" class="far fa-comment"></i> {{ post.number_of_comments }} comment(s)
+                                        <i style=" font-size: 16px;" class="far fa-comment"></i>comment(s)
                                     </a>
 
                                 </small>
@@ -213,10 +214,10 @@
 
                 </div>
                 </article>
-            {% endfor %}-->
+            {% endfor %}
 
             <div class="full-width d-flex justify-content-center">
-                <!--{% if is_paginated %}
+                {% if is_paginated %}
                     {% if page_obj.has_previous %}
                         <a class="btn btn-sm btn-outline-secondary mb-4 mr-2"
                                 href="?page=1">First</a>
@@ -240,7 +241,7 @@
                            <a class="btn btn-sm btn-outline-secondary mb-4 mr-2"
                             href="?page={{ page_obj.paginator.num_pages }}">Last</a>
                     {% endif %}
-                {% endif %}-->
+                {% endif %}
             </div>
         </div>
         <div class="col-12 col-md-3 dont-move">
@@ -251,10 +252,10 @@
                     <button type="submit" style="border:0; background: transparent;"><i class="fa fa-search"></i> </button> </a>
                 </form>
               </div>
-            </div>
+        </div>
             <h3 class="white-important mb-3 mt-4"> Trends </h3>
 
-                <!--{%  if user_profile is None %}
+                {%  if user_profile is None %}
 
                 <article class="t-section media content-section">
 
@@ -274,7 +275,7 @@
                                                class="rounded-circle mr-2"
                                                style="width: 20px; height: 20px;"
                                                src="{{ user.profile.image.url }}">
-                                           <a class="mr-2 white-important" href="{% url 'user-posts' user.username %}">
+                                           <a class="mr-2 white-important" href="{% url 'user_posts' user.username %}">
                                                {{ user.username }}
                                            </a>
                                        </div>
@@ -287,7 +288,7 @@
                     </div>
 
                 </article>
-                {% endif %}-->
+                {% endif %}
                 <p><a href="">Terms</a>,
 <a href="">Privacy policy</a>,
 <a href="">Cookies</a>,
