@@ -19,12 +19,12 @@ PAGE_SIZE = 3
 def is_users(post_user, logged_user):
     return post_user == logged_user
 
-
+@login_required
 def home(request):
     profile = Profile.objects.get(user=request.user)
     posts = Posts.objects.all().order_by('-date_posted')
     all_users = User.objects.all()
-    paginator = Paginator(posts, 2)
+    paginator = Paginator(posts, 3)
     page_number = request.GET.get('page',1)
     page_obj=paginator.page(page_number)
     context = {
@@ -176,6 +176,8 @@ class PostCreateView(LoginRequiredMixin,CreateView):
         data['tagline']='Add a new Post'
         return data
 
+def about(request):
+    return render(request, 'blog/about.html')
 
 
 #like functionality ------------------------------------------------------

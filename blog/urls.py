@@ -13,6 +13,7 @@ from .import views
 
 urlpatterns = [
     path('', views.home, name="home"),
+    path('about/',views.about, name="about"),
     path('post/new/', PostCreateView.as_view(), name='post-create'),
     path('post/<int:pk>/',PostDetailView.as_view(),name="post_detail"),
     path('user/<str:username>', UserPostListView.as_view(), name='user_posts'),
